@@ -1,0 +1,22 @@
+{
+"rules": [
+  {
+    "database": {
+        "name": "database.*",
+        "tables": [
+           {
+             "name": "table.*"
+           }
+        ]
+    },
+    "match": {
+      "type": "COLUMN_TYPE",
+      "value": "TIMESTAMP"
+    },
+    "action": {
+      "type": "MAPPING",
+      "value": "DATETIME"
+    }
+  }
+]
+}
