@@ -1,0 +1,23 @@
+{
+    "agent-id": "0eebc1ad-621d-4386-87f1-8eca96991f63",
+    "transfer-configuration": {
+      "project-id": "123456789876",
+      "location": "us",
+      "id": "5d533a90-0000-2e89-89a0-94eb2c059a76"
+    },
+    "source-type": "teradata",
+    "console-log": false,
+    "silent": false,
+    "teradata-config": {
+      "connection": {
+       "host": "localhost"
+      },
+      "local-processing-space": "extracted",
+      "database-credentials-file-path": "",
+      "max-local-storage": "200GB",
+      "use-tpt": true,
+      "max-sessions": 0,
+      "max-parallel-upload": 1,
+      "max-unload-file-size": "2GB"
+     }
+   }
