@@ -84,7 +84,7 @@ initialize_migration_agent() {
         { java -cp \
                 ${TDGSSCONFIG_JAR_PATH}:${TERAJDBC4_JAR_PATH}:${MIRRORING_AGENT_JAR_PATH} \
                 com.google.cloud.bigquery.dms.Agent \
-                --initialize
+                --initialize  } 
 }
 
 initialize_migration_agent_expect() {
@@ -113,7 +113,85 @@ run_migration_agent() {
         { java -cp \
                 ${TDGSSCONFIG_JAR_PATH}:${TERAJDBC4_JAR_PATH}:${MIRRORING_AGENT_JAR_PATH} \
                 com.google.cloud.bigquery.dms.Agent \
-                --configuration-file=${CONFIG_JSON_FILE_PATH}
+                --configuration-file=${CONFIG_JSON_FILE_PATH} && return 0; } || return 1
 
 
 }
+
+
+get_transfer_config() {
+    # Function to get information about a transfer configuration 
+    local RESOURCE_NAME="$1"
+        {bq show \
+                --format=prettyjson \
+                --transfer_config ${RESOURCE_NAME} } 
+}
+
+list_transfer_configurations() {
+    # Function to list all the transfers, or transfer configurations, in a project and filter by type
+    local LOCATION="$1"
+    local PROJECT_ID="$2"
+    local MAX_RESULTS_INTEGER="$3"
+    loacl DATA_SOURCES="Teradata"
+        {bq ls \
+                --transfer_config \
+                --transfer_location=${LOCATION} \
+                --project_id=${PROJECT_ID} \
+                --max_results=${MAX_RESULTS_INTEGER} \
+                --filter=dataSourceIds:${DATA_SOURCES}  }
+}
+
+view_transfer_run_history() {
+    # Function to view the run history for a transfer configuration
+    local LOCATION="$1"
+    local PROJECT_ID="$2"
+    local MAX_RESULTS_INTEGER="$3"
+    local TRANSFER_RUN_STATE="SUCCEEDED, FAILED, PENDING, RUNNING, CANCELLED"
+    local RESOURCE_NAME="$4"
+
+        {bq ls \
+                --transfer_config \
+                --transfer_location=${LOCATION} \
+                --project_id=${PROJECT_ID} \
+                --max_results=${MAX_RESULTS_INTEGER} \
+                --filter=states:${TRANSFER_RUN_STATE} \
+                ${RESOURCE_NAME}  } 
+}
+
+view_transfer_run_details() {
+    # Function to view the transfer run details
+    # run_name is the transfer run's Run Name. You can retrieve the Run Name by using the bq ls command.
+    local RUN_NAME="$1"
+        {bq show \
+                --format=prettyjson \
+                --transfer_run ${RUN_NAME} } 
+}
+
+view_transfer_log() {
+    # Function to view the transfer log details
+    # run_name is the transfer run's Run Name. You can retrieve the Run Name by using the bq ls command.
+    local RUN_NAME="$1"
+    # message_type is the type of log message to view (a single value or a comma-separated list)
+    local MESSAGE_TYPE="INFO, WARNING, ERROR"
+        {bq ls \
+                --transfer_log \
+                --max_results=integer \
+                --message_type=messageTypes:${MESSAGE_TYPE} \
+                ${RUN_NAME} } 
+}
+
+update_transfer_config() {
+    # Function to update the transfer config
+    local TRANSFER_NAME="$1"
+    local TARGET_BQ_DATASET="$2"
+    local RESOURCE_NAME="$3"
+    local PARAMETERS="$4"
+        {bq update \
+                --display_name=${TRANSFER_NAME} \
+                --target_dataset=${TARGET_BQ_DATASET} \
+                --params=${PARAMETERS} \
+                --transfer_config \
+                ${RESOURCE_NAME} && return 0; } || return 1
+}
+
+
