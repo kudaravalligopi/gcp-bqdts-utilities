@@ -1,0 +1,34 @@
+{
+  "databases": [
+    {
+      "name": "db",
+      "originalName": "db",
+      "tables": [
+        {
+          "name": "test",
+          "originalName": "test",
+          "columns": [
+            {
+              "name": "foo",
+              "originalName": "foo",
+              "type": "INT64",
+              "usageType": ["CLUSTERING"]
+            },
+            {
+              "name": "bar",
+              "originalName": "bar",
+              "type": "DATE",
+              "usageType": ["PARTITIONING"]
+            },
+            {
+              "name": "change",
+              "originalName": "change",
+              "type": "TIMESTAMP",
+              "usageType": ["COMMIT_TIMESTAMP"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
