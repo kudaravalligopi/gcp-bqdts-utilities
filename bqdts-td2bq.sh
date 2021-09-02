@@ -194,4 +194,11 @@ update_transfer_config() {
                 ${RESOURCE_NAME} && return 0; } || return 1
 }
 
-
+delete_transfer_run() {
+    # Function to delete a transfer run 
+    local RESOURCE_NAME="$1"
+        {bq rm \
+                -f \
+                --transfer_config \
+                ${RESOURCE_NAME} && return 0; } || return 1
+}
